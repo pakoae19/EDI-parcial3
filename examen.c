@@ -38,12 +38,61 @@ typedef struct{
 
 }Deportista;
 
+int lecturaDatos(Deportista dep[100]);
+void medallas(Deportista dep[100], char deporte[6][30], int N);
+
 int main()
 {
     Deportista deportistas[100];
     // Puede cambiar la declaración de este arreglo a donde lo considere necesario
-    char deporte[6][30] = {"Natación", "Atletismo", "Ciclismo", "Gimnasia", "Equitacion", "Esgrima"};
-
+    char deporte[6][30] = {"Natación", "Atletismo", "Ciclismo", "Gimnasia", "Equitación", "Esgrima"};
+    int N;
+    
+    N = lecturaDatos(deportistas);
+    medallas(deportistas, deporte, N);
+    
     return 0;
 }
 
+void medallas(Deportista dep[100], char deporte[6][30], int N)
+{
+    int i, l;
+    int medallas[6];
+    
+    for(i = 0; i < 6; i++)
+    {
+        medallas[i] = 0;
+        for(l = 0; l < N; l++)
+        {
+            if(strcmp(deporte[i], dep[l].deporte) == 0)// Si devuelve 0 son iguales
+            {
+                medallas[i] += dep[l].numMedallas;
+            }
+        }
+    }
+    printf("El número de medallas por deporte es:\n\tNatación: %d\n\tAtletismo: %d\n\tCiclismo: %d\n\tGimnasia: %d\n\tEquitación: %d\n\tEsgrima: %d\n", medallas[0], medallas[1], medallas[2], medallas[3], medallas[4], medallas[5]);
+}
+
+int lecturaDatos(Deportista dep[100])
+{
+    FILE *archivo;
+    int i = 0, fin, cerrado;
+    
+    archivo = fopen("deportistas.txt", "r");
+    
+    do
+    {
+        fscanf(archivo, "%s", dep[i].datos.nombre);
+        fscanf(archivo, "%s", dep[i].datos.pais);
+        fscanf(archivo, "%s", dep[i].deporte);
+        fin = fscanf(archivo, "%d", &dep[i].numMedallas);
+        i++;
+    }while(fin != EOF);
+    
+    cerrado = fclose(archivo);
+    
+    if(cerrado == EOF)
+        printf("El archivo no se cerró bien\n");
+    
+    return i;
+}
